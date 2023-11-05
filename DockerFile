@@ -1,0 +1,23 @@
+FROM node:lts-alpine as build-stage
+
+WORKDIR /build
+
+COPY ./package.json .
+# get version yarn from package.json
+RUN npm pkg get volta.yarn | tr -d '"' > YARN_VERSION.txt
+
+COPY ./.yarn/install-state.gz ./.yarn/install-state.gz
+COPY ./yarn.lock .
+
+RUN yarn set version $(cat YARN_VERSION.txt) && rm YARN_VERSION.txt
+RUN yarn add --cached
+
+FROM node:lts-alpine
+
+WORKDIR /app
+
+COPY --from=build-stage /builder .
+COPY ./dist/apps .
+
+EXPOSE 8080
+ENTRYPOINT ["yarn", "node", "./main.js"]
