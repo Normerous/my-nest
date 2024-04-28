@@ -1,0 +1,24 @@
+name: CI Release
+
+on:
+    workflow_dispatch:
+
+jobs:
+    prepare:
+        runs-on: ubuntu-latest
+        if: github.event_name == 'workflow_dispatch' && startsWith(github.ref, 'refs/heads/release/v')
+        outputs:
+            build-number: ${{ steps.prepare.outputs.build-number }}
+        steps:
+            - name: Prepare
+              id: prepare
+              run: |
+                echo "build-number=B-123" >> $GITHUB_OUTPUT
+
+    main:
+        needs: prepare
+        name: Build
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build Step
+              run: echo "Build"
