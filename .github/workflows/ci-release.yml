@@ -6,8 +6,7 @@ on:
 jobs:
     prepare:
         runs-on: ubuntu-latest
-        if: |
-            run: echo "${{ github.ref }}" | grep -E 'release/v[0-9]+.[0-9]+.[0-9]+' && echo $? -eq 0
+        if: run echo "${{ github.ref }}" | grep -E 'release/v[0-9]+.[0-9]+.[0-9]+' && echo $? -eq 0
         outputs:
             build-number: ${{ steps.prepare.outputs.build-number }}
         steps:
